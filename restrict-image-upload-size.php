@@ -107,6 +107,7 @@ function rius_restrict_image_upload_size( $file ) {
         if ( $width < $min_width || $height < $min_height ) {
             $settings_url = admin_url( 'options-media.php' );
             $file['error'] = sprintf(
+                // translators: %1$s is the minimum width, and %2$s is the minimum height required for images.
                 __( 'Image dimensions are too small. Minimum size is %1$s x %2$s pixels. To adjust this setting, go to Media Settings in your dashboard.', 'restrict-image-upload-size' ),
                 $min_width,
                 $min_height
