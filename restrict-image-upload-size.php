@@ -41,9 +41,18 @@ function rius_add_media_settings_fields() {
         'rius_settings_section'
     );
 
-    // Set default values to 1000 for width and 650 for height.
-    register_setting( 'media', 'rius_min_width', array( 'type' => 'number', 'default' => 1000 ) );
-    register_setting( 'media', 'rius_min_height', array( 'type' => 'number', 'default' => 650 ) );
+    // Set default values to 800 for width and 500 for height, with sanitization
+    register_setting( 'media', 'rius_min_width', array(
+        'type'              => 'number',
+        'default'           => 800,
+        'sanitize_callback' => 'absint', // Ensures the width is a non-negative integer
+    ) );
+
+    register_setting( 'media', 'rius_min_height', array(
+        'type'              => 'number',
+        'default'           => 500,
+        'sanitize_callback' => 'absint', // Ensures the height is a non-negative integer
+    ) );
 }
 add_action( 'admin_init', 'rius_add_media_settings_fields' );
 
@@ -51,7 +60,7 @@ add_action( 'admin_init', 'rius_add_media_settings_fields' );
  * Render the Minimum Width Field.
  */
 function rius_render_min_width_field() {
-    $min_width = get_option( 'rius_min_width', 1000 );
+    $min_width = get_option( 'rius_min_width', 800 );
     echo '<input type="number" name="rius_min_width" value="' . esc_attr( $min_width ) . '" min="1" />';
 }
 
@@ -59,7 +68,7 @@ function rius_render_min_width_field() {
  * Render the Minimum Height Field.
  */
 function rius_render_min_height_field() {
-    $min_height = get_option( 'rius_min_height', 650 );
+    $min_height = get_option( 'rius_min_height', 500 );
     echo '<input type="number" name="rius_min_height" value="' . esc_attr( $min_height ) . '" min="1" />';
 }
 
@@ -86,8 +95,8 @@ function rius_restrict_image_upload_size( $file ) {
     // Proceed only if the file is an image based on MIME type.
     if ( strpos( $mime_type, 'image/' ) === 0 ) {
         // Get minimum width and height from options, with defaults if not set.
-        $min_width  = get_option( 'rius_min_width', 1000 );
-        $min_height = get_option( 'rius_min_height', 650 );
+        $min_width  = get_option( 'rius_min_width', 800 );
+        $min_height = get_option( 'rius_min_height', 500 );
 
         // Get image dimensions
         $image_size = getimagesize( $file['tmp_name'] );
